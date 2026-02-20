@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Issue Book - Library Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a2332 0%, #2d4263 50%, #1e3a5f 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            background: linear-gradient(135deg, #0f1922 0%, #1a2f4a 100%);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #c9a961;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: rgba(201, 169, 97, 0.3);
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #d4e2f0 0%, #b8d4e8 100%);
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            color: #0f1922;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #555;
+            font-size: 16px;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            padding: 40px;
+        }
+
+        .form-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .form-section h2 {
+            color: #1a2f4a;
+            margin-bottom: 25px;
+            font-size: 24px;
+            border-bottom: 3px solid #c9a961;
+            padding-bottom: 10px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: #c9a961;
+        }
+
+        .search-result {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border: 2px solid #c9a961;
+            display: none;
+        }
+
+        .search-result.active {
+            display: block;
+        }
+
+        .search-result h3 {
+            color: #1a2f4a;
+            margin-bottom: 10px;
+        }
+
+        .search-result p {
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .status-badge.available {
+            background: #d4f4dd;
+            color: #0f5132;
+        }
+
+        .status-badge.not-available {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1a2f4a 0%, #2d4a6e 100%);
+            color: white;
+            border: 2px solid #c9a961;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(201, 169, 97, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #1a2f4a;
+            border: 2px solid #1a2f4a;
+        }
+
+        .btn-secondary:hover {
+            background: #f8f9fa;
+        }
+
+        /* Issue Summary */
+        .issue-summary {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #1a2f4a 0%, #2d4a6e 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            display: none;
+        }
+
+        .issue-summary.active {
+            display: block;
+        }
+
+        .issue-summary h2 {
+            margin-bottom: 20px;
+            color: #c9a961;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .summary-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .summary-item label {
+            display: block;
+            color: #c9a961;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .summary-item span {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .success-message {
+            background: #d4f4dd;
+            color: #0f5132;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #c9a961;
+            display: none;
+        }
+
+        .success-message.active {
+            display: block;
+        }
+
+        /* Recent Issues */
+        .recent-issues {
+            grid-column: 1 / -1;
+            margin-top: 20px;
+        }
+
+        .recent-issues h3 {
+            color: #1a2f4a;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+
+        .issues-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        .issues-table th {
+            background: linear-gradient(135deg, #1a2f4a 0%, #2d4a6e 100%);
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .issues-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .issues-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav>
+            <div class="logo">
+                📚 Library Management System
+            </div>
+            <ul class="nav-links">
+                <li><a href="library-home.html">Home</a></li>
+                <li><a href="book-list.html">Book List</a></li>
+                <li><a href="issue-book.html" class="active">Issue Book</a></li>
+                <li><a href="return-book.html">Return Book</a></li>
+            </ul>
+        </nav>
+
+        <!-- Header -->
+        <div class="header">
+            <h1>📤 Issue Book</h1>
+            <p>Issue books to registered library members</p>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="success-message" id="successMessage">
+                Book issued successfully!
+            </div>
+
+            <!-- User Search Section -->
+            <div class="form-section">
+                <h2>👤 Select User</h2>
+                <div class="input-group">
+                    <label for="userSearch">Search User</label>
+                    <input type="text" id="userSearch" placeholder="Enter User ID or Name" oninput="searchUser()">
+                </div>
+
+                <div class="input-group">
+                    <label for="userSelect">Or Select from List</label>
+                    <select id="userSelect" onchange="selectUser()">
+                        <option value="">-- Select User --</option>
+                        <option value="U001">John Doe (U001)</option>
+                        <option value="U002">Jane Smith (U002)</option>
+                        <option value="U003">Michael Johnson (U003)</option>
+                        <option value="U004">Emily Davis (U004)</option>
+                        <option value="U005">David Wilson (U005)</option>
+                    </select>
+                </div>
+
+                <div class="search-result" id="userResult">
+                    <h3>User Details</h3>
+                    <p><strong>User ID:</strong> <span id="userId">U001</span></p>
+                    <p><strong>Name:</strong> <span id="userName">John Doe</span></p>
+                    <p><strong>Email:</strong> <span id="userEmail">john.doe@email.com</span></p>
+                    <p><strong>Phone:</strong> <span id="userPhone">+91 98765 43210</span></p>
+                    <p><strong>Books Issued:</strong> <span id="booksIssued">2/5</span></p>
+                </div>
+            </div>
+
+            <!-- Book Search Section -->
+            <div class="form-section">
+                <h2>📚 Select Book</h2>
+                <div class="input-group">
+                    <label for="bookSearch">Search Book</label>
+                    <input type="text" id="bookSearch" placeholder="Enter Book ID or Title" oninput="searchBook()">
+                </div>
+
+                <div class="input-group">
+                    <label for="bookSelect">Or Select from Available Books</label>
+                    <select id="bookSelect" onchange="selectBook()">
+                        <option value="">-- Select Book --</option>
+                        <option value="BK001">The Great Gatsby (BK001)</option>
+                        <option value="BK003">A Brief History of Time (BK003)</option>
+                        <option value="BK004">Sapiens (BK004)</option>
+                        <option value="BK006">1984 (BK006)</option>
+                        <option value="BK007">Educated (BK007)</option>
+                    </select>
+                </div>
+
+                <div class="search-result" id="bookResult">
+                    <h3>Book Details</h3>
+                    <p><strong>Book ID:</strong> <span id="bookId">BK001</span></p>
+                    <p><strong>Title:</strong> <span id="bookTitle">The Great Gatsby</span></p>
+                    <p><strong>Author:</strong> <span id="bookAuthor">F. Scott Fitzgerald</span></p>
+                    <p><strong>ISBN:</strong> <span id="bookISBN">978-0-7432-7356-5</span></p>
+                    <span class="status-badge available" id="bookStatus">Available</span>
+                </div>
+            </div>
+
+            <!-- Issue Details -->
+            <div class="form-section" style="grid-column: 1 / -1;">
+                <h2>📅 Issue Details</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                    <div class="input-group">
+                        <label for="issueDate">Issue Date</label>
+                        <input type="date" id="issueDate" value="">
+                    </div>
+                    <div class="input-group">
+                        <label for="dueDate">Due Date</label>
+                        <input type="date" id="dueDate" value="">
+                    </div>
+                    <div class="input-group">
+                        <label for="remarks">Remarks (Optional)</label>
+                        <input type="text" id="remarks" placeholder="Any special notes">
+                    </div>
+                </div>
+
+                <div class="button-group" style="margin-top: 25px;">
+                    <button class="btn btn-primary" onclick="issueBook()">Issue Book</button>
+                    <button class="btn btn-secondary" onclick="resetForm()">Reset Form</button>
+                </div>
+            </div>
+
+            <!-- Recent Issues -->
+            <div class="recent-issues">
+                <h3>📋 Recent Issues</h3>
+                <table class="issues-table">
+                    <thead>
+                        <tr>
+                            <th>Issue ID</th>
+                            <th>User</th>
+                            <th>Book</th>
+                            <th>Issue Date</th>
+                            <th>Due Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>ISS001</td>
+                            <td>John Doe (U001)</td>
+                            <td>To Kill a Mockingbird</td>
+                            <td>2025-02-10</td>
+                            <td>2025-02-24</td>
+                            <td><span class="status-badge not-available">Active</span></td>
+                        </tr>
+                        <tr>
+                            <td>ISS002</td>
+                            <td>Jane Smith (U002)</td>
+                            <td>Clean Code</td>
+                            <td>2025-02-12</td>
+                            <td>2025-02-26</td>
+                            <td><span class="status-badge not-available">Active</span></td>
+                        </tr>
+                        <tr>
+                            <td>ISS003</td>
+                            <td>Michael Johnson (U003)</td>
+                            <td>The Code Breaker</td>
+                            <td>2025-02-13</td>
+                            <td>2025-02-27</td>
+                            <td><span class="status-badge not-available">Active</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set default dates
+        document.addEventListener('DOMContentLoaded', function () {
+            const today = new Date();
+            const dueDate = new Date(today);
+            dueDate.setDate(dueDate.getDate() + 14); // 14 days from today
+
+            document.getElementById('issueDate').valueAsDate = today;
+            document.getElementById('dueDate').valueAsDate = dueDate;
+        });
+
+        function searchUser() {
+            const searchTerm = document.getElementById('userSearch').value;
+            if (searchTerm.length > 2) {
+                document.getElementById('userResult').classList.add('active');
+            } else {
+                document.getElementById('userResult').classList.remove('active');
+            }
+        }
+
+        function selectUser() {
+            const userId = document.getElementById('userSelect').value;
+            if (userId) {
+                document.getElementById('userResult').classList.add('active');
+            }
+        }
+
+        function searchBook() {
+            const searchTerm = document.getElementById('bookSearch').value;
+            if (searchTerm.length > 2) {
+                document.getElementById('bookResult').classList.add('active');
+            } else {
+                document.getElementById('bookResult').classList.remove('active');
+            }
+        }
+
+        function selectBook() {
+            const bookId = document.getElementById('bookSelect').value;
+            if (bookId) {
+                document.getElementById('bookResult').classList.add('active');
+            }
+        }
+
+        function issueBook() {
+            const userId = document.getElementById('userSelect').value || document.getElementById('userSearch').value;
+            const bookId = document.getElementById('bookSelect').value || document.getElementById('bookSearch').value;
+            const issueDate = document.getElementById('issueDate').value;
+            const dueDate = document.getElementById('dueDate').value;
+
+            if (!userId || !bookId) {
+                alert('Please select both user and book');
+                return;
+            }
+
+            if (!issueDate || !dueDate) {
+                alert('Please select issue and due dates');
+                return;
+            }
+
+            // Show success message
+            const successMsg = document.getElementById('successMessage');
+            successMsg.classList.add('active');
+
+            // Simulate issue process
+            setTimeout(() => {
+                alert('Book issued successfully!\n\nUser: ' + userId + '\nBook: ' + bookId + '\nDue Date: ' + dueDate);
+                resetForm();
+                successMsg.classList.remove('active');
+            }, 1500);
+        }
+
+        function resetForm() {
+            document.getElementById('userSearch').value = '';
+            document.getElementById('userSelect').value = '';
+            document.getElementById('bookSearch').value = '';
+            document.getElementById('bookSelect').value = '';
+            document.getElementById('remarks').value = '';
+            document.getElementById('userResult').classList.remove('active');
+            document.getElementById('bookResult').classList.remove('active');
+
+            // Reset dates to default
+            const today = new Date();
+            const dueDate = new Date(today);
+            dueDate.setDate(dueDate.getDate() + 14);
+            document.getElementById('issueDate').valueAsDate = today;
+            document.getElementById('dueDate').valueAsDate = dueDate;
+        }
+    </script>
+</body>
+
+</html>

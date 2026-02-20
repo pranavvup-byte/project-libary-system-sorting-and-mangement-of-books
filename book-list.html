@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book List - Library Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a2332 0%, #2d4263 50%, #1e3a5f 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            background: linear-gradient(135deg, #0f1922 0%, #1a2f4a 100%);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #c9a961;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: rgba(201, 169, 97, 0.3);
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #d4e2f0 0%, #b8d4e8 100%);
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            color: #0f1922;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #555;
+            font-size: 16px;
+        }
+
+        /* Search and Filter Section */
+        .search-section {
+            padding: 40px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #c9a961;
+        }
+
+        .search-box button {
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #1a2f4a 0%, #c9a961 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .filters {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .filter-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        /* Book List */
+        .book-list-section {
+            padding: 40px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .section-header h2 {
+            color: #1a2f4a;
+            font-size: 28px;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 10px;
+        }
+
+        .view-btn {
+            padding: 10px 20px;
+            border: 2px solid #1a2f4a;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .view-btn.active {
+            background: #1a2f4a;
+            color: white;
+        }
+
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .book-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: #c9a961;
+        }
+
+        .book-cover {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #1a2f4a 0%, #2d4a6e 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .book-info h3 {
+            color: #1a2f4a;
+            margin-bottom: 8px;
+            font-size: 18px;
+        }
+
+        .book-info p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .book-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .status {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status.available {
+            background: #d4f4dd;
+            color: #0f5132;
+        }
+
+        .status.issued {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        .book-id {
+            color: #999;
+            font-size: 12px;
+        }
+
+        /* Table View */
+        .book-table {
+            display: none;
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        .book-table.active {
+            display: table;
+        }
+
+        .book-table th {
+            background: linear-gradient(135deg, #1a2f4a 0%, #2d4a6e 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .book-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .book-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #1a2f4a 0%, #2d4a6e 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .action-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 40px;
+        }
+
+        .page-btn {
+            padding: 10px 15px;
+            border: 2px solid #1a2f4a;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .page-btn:hover,
+        .page-btn.active {
+            background: #1a2f4a;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .book-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav>
+            <div class="logo">
+                📚 Library Management System
+            </div>
+            <ul class="nav-links">
+                <li><a href="library-home.html">Home</a></li>
+                <li><a href="book-list.html" class="active">Book List</a></li>
+                <li><a href="issue-book.html">Issue Book</a></li>
+                <li><a href="return-book.html">Return Book</a></li>
+            </ul>
+        </nav>
+
+        <!-- Header -->
+        <div class="header">
+            <h1>📖 Library Book Collection</h1>
+            <p>Browse, search, and explore our extensive collection</p>
+        </div>
+
+        <!-- Search and Filter -->
+        <div class="search-section">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search by title, author, ISBN, or category...">
+                <button onclick="searchBooks()">Search</button>
+            </div>
+            <div class="filters">
+                <div class="filter-group">
+                    <label>Availability</label>
+                    <select id="availabilityFilter" onchange="filterBooks()">
+                        <option value="all">All Books</option>
+                        <option value="available">Available Only</option>
+                        <option value="issued">Issued Only</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Category</label>
+                    <select id="categoryFilter" onchange="filterBooks()">
+                        <option value="all">All Categories</option>
+                        <option value="fiction">Fiction</option>
+                        <option value="non-fiction">Non-Fiction</option>
+                        <option value="science">Science</option>
+                        <option value="history">History</option>
+                        <option value="technology">Technology</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Sort By</label>
+                    <select id="sortFilter" onchange="sortBooks()">
+                        <option value="title-asc">Title (A-Z)</option>
+                        <option value="title-desc">Title (Z-A)</option>
+                        <option value="author">Author Name</option>
+                        <option value="year-new">Year (Newest)</option>
+                        <option value="year-old">Year (Oldest)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Book List -->
+        <div class="book-list-section">
+            <div class="section-header">
+                <h2>All Books</h2>
+                <div class="view-toggle">
+                    <button class="view-btn active" onclick="toggleView('grid')">Grid View</button>
+                    <button class="view-btn" onclick="toggleView('table')">Table View</button>
+                </div>
+            </div>
+
+            <!-- Grid View -->
+            <div class="book-grid" id="bookGrid">
+                <div class="book-card">
+                    <div class="book-cover">📕</div>
+                    <div class="book-info">
+                        <h3>The Great Gatsby</h3>
+                        <p><strong>Author:</strong> F. Scott Fitzgerald</p>
+                        <p><strong>Category:</strong> Fiction</p>
+                        <p><strong>Year:</strong> 1925</p>
+                        <div class="book-meta">
+                            <span class="status available">Available</span>
+                            <span class="book-id">ID: BK001</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="book-card">
+                    <div class="book-cover">📗</div>
+                    <div class="book-info">
+                        <h3>To Kill a Mockingbird</h3>
+                        <p><strong>Author:</strong> Harper Lee</p>
+                        <p><strong>Category:</strong> Fiction</p>
+                        <p><strong>Year:</strong> 1960</p>
+                        <div class="book-meta">
+                            <span class="status issued">Issued</span>
+                            <span class="book-id">ID: BK002</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="book-card">
+                    <div class="book-cover">📘</div>
+                    <div class="book-info">
+                        <h3>A Brief History of Time</h3>
+                        <p><strong>Author:</strong> Stephen Hawking</p>
+                        <p><strong>Category:</strong> Science</p>
+                        <p><strong>Year:</strong> 1988</p>
+                        <div class="book-meta">
+                            <span class="status available">Available</span>
+                            <span class="book-id">ID: BK003</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="book-card">
+                    <div class="book-cover">📙</div>
+                    <div class="book-info">
+                        <h3>Sapiens</h3>
+                        <p><strong>Author:</strong> Yuval Noah Harari</p>
+                        <p><strong>Category:</strong> History</p>
+                        <p><strong>Year:</strong> 2011</p>
+                        <div class="book-meta">
+                            <span class="status available">Available</span>
+                            <span class="book-id">ID: BK004</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="book-card">
+                    <div class="book-cover">📕</div>
+                    <div class="book-info">
+                        <h3>Clean Code</h3>
+                        <p><strong>Author:</strong> Robert C. Martin</p>
+                        <p><strong>Category:</strong> Technology</p>
+                        <p><strong>Year:</strong> 2008</p>
+                        <div class="book-meta">
+                            <span class="status issued">Issued</span>
+                            <span class="book-id">ID: BK005</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="book-card">
+                    <div class="book-cover">📗</div>
+                    <div class="book-info">
+                        <h3>1984</h3>
+                        <p><strong>Author:</strong> George Orwell</p>
+                        <p><strong>Category:</strong> Fiction</p>
+                        <p><strong>Year:</strong> 1949</p>
+                        <div class="book-meta">
+                            <span class="status available">Available</span>
+                            <span class="book-id">ID: BK006</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="book-card">
+                    <div class="book-cover">📘</div>
+                    <div class="book-info">
+                        <h3>Educated</h3>
+                        <p><strong>Author:</strong> Tara Westover</p>
+                        <p><strong>Category:</strong> Non-Fiction</p>
+                        <p><strong>Year:</strong> 2018</p>
+                        <div class="book-meta">
+                            <span class="status available">Available</span>
+                            <span class="book-id">ID: BK007</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="book-card">
+                    <div class="book-cover">📙</div>
+                    <div class="book-info">
+                        <h3>The Code Breaker</h3>
+                        <p><strong>Author:</strong> Walter Isaacson</p>
+                        <p><strong>Category:</strong> Science</p>
+                        <p><strong>Year:</strong> 2021</p>
+                        <div class="book-meta">
+                            <span class="status issued">Issued</span>
+                            <span class="book-id">ID: BK008</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table View -->
+            <table class="book-table" id="bookTable">
+                <thead>
+                    <tr>
+                        <th>Book ID</th>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Category</th>
+                        <th>Year</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>BK001</td>
+                        <td>The Great Gatsby</td>
+                        <td>F. Scott Fitzgerald</td>
+                        <td>Fiction</td>
+                        <td>1925</td>
+                        <td><span class="status available">Available</span></td>
+                        <td><button class="action-btn">View Details</button></td>
+                    </tr>
+                    <tr>
+                        <td>BK002</td>
+                        <td>To Kill a Mockingbird</td>
+                        <td>Harper Lee</td>
+                        <td>Fiction</td>
+                        <td>1960</td>
+                        <td><span class="status issued">Issued</span></td>
+                        <td><button class="action-btn">View Details</button></td>
+                    </tr>
+                    <tr>
+                        <td>BK003</td>
+                        <td>A Brief History of Time</td>
+                        <td>Stephen Hawking</td>
+                        <td>Science</td>
+                        <td>1988</td>
+                        <td><span class="status available">Available</span></td>
+                        <td><button class="action-btn">View Details</button></td>
+                    </tr>
+                    <tr>
+                        <td>BK004</td>
+                        <td>Sapiens</td>
+                        <td>Yuval Noah Harari</td>
+                        <td>History</td>
+                        <td>2011</td>
+                        <td><span class="status available">Available</span></td>
+                        <td><button class="action-btn">View Details</button></td>
+                    </tr>
+                    <tr>
+                        <td>BK005</td>
+                        <td>Clean Code</td>
+                        <td>Robert C. Martin</td>
+                        <td>Technology</td>
+                        <td>2008</td>
+                        <td><span class="status issued">Issued</span></td>
+                        <td><button class="action-btn">View Details</button></td>
+                    </tr>
+                    <tr>
+                        <td>BK006</td>
+                        <td>1984</td>
+                        <td>George Orwell</td>
+                        <td>Fiction</td>
+                        <td>1949</td>
+                        <td><span class="status available">Available</span></td>
+                        <td><button class="action-btn">View Details</button></td>
+                    </tr>
+                    <tr>
+                        <td>BK007</td>
+                        <td>Educated</td>
+                        <td>Tara Westover</td>
+                        <td>Non-Fiction</td>
+                        <td>2018</td>
+                        <td><span class="status available">Available</span></td>
+                        <td><button class="action-btn">View Details</button></td>
+                    </tr>
+                    <tr>
+                        <td>BK008</td>
+                        <td>The Code Breaker</td>
+                        <td>Walter Isaacson</td>
+                        <td>Science</td>
+                        <td>2021</td>
+                        <td><span class="status issued">Issued</span></td>
+                        <td><button class="action-btn">View Details</button></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <button class="page-btn">&laquo;</button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <button class="page-btn">4</button>
+                <button class="page-btn">&raquo;</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleView(view) {
+            const gridView = document.getElementById('bookGrid');
+            const tableView = document.getElementById('bookTable');
+            const buttons = document.querySelectorAll('.view-btn');
+
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            if (view === 'grid') {
+                gridView.style.display = 'grid';
+                tableView.classList.remove('active');
+                buttons[0].classList.add('active');
+            } else {
+                gridView.style.display = 'none';
+                tableView.classList.add('active');
+                buttons[1].classList.add('active');
+            }
+        }
+
+        function searchBooks() {
+            const searchTerm = document.getElementById('searchInput').value;
+            alert('Searching for: ' + searchTerm);
+            // Search functionality would be implemented here
+        }
+
+        function filterBooks() {
+            const availability = document.getElementById('availabilityFilter').value;
+            const category = document.getElementById('categoryFilter').value;
+            alert('Filtering by: ' + availability + ' and ' + category);
+            // Filter functionality would be implemented here
+        }
+
+        function sortBooks() {
+            const sortBy = document.getElementById('sortFilter').value;
+            alert('Sorting by: ' + sortBy);
+            // Sort functionality would be implemented here
+        }
+    </script>
+</body>
+
+</html>

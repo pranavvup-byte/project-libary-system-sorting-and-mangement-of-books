@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Login & Sign Up</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a2332 0%, #2d4263 50%, #1e3a5f 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            width: 100%;
+            max-width: 450px;
+            border-top: 4px solid #c9a961;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0f1922 0%, #1a2f4a 100%);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: #c9a961;
+        }
+
+        .form-container {
+            padding: 40px;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .tab.active {
+            color: #1a2f4a;
+            border-bottom-color: #c9a961;
+        }
+
+        .tab:hover {
+            color: #1a2f4a;
+        }
+
+        .form {
+            display: none;
+        }
+
+        .form.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            color: #1a2f4a;
+            margin-bottom: 25px;
+            font-size: 28px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #c9a961;
+            box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.1);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            font-weight: normal;
+            cursor: pointer;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #1a2f4a 0%, #2d4a6e 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(201, 169, 97, 0.4);
+            border-color: #c9a961;
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-top: -10px;
+            margin-bottom: 20px;
+        }
+
+        .forgot-password a {
+            color: #1a2f4a;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+            color: #c9a961;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+            color: #999;
+            font-size: 14px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .divider span {
+            padding: 0 15px;
+        }
+
+        .social-login {
+            display: flex;
+            gap: 10px;
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #1a2f4a;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: #1a2f4a;
+        }
+
+        .social-btn:hover {
+            border-color: #c9a961;
+            color: #c9a961;
+            transform: translateY(-2px);
+            background: #f8f9fa;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 13px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success-message {
+            background: #d4f4dd;
+            color: #0f5132;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            border-left: 4px solid #c9a961;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Library Management System</h1>
+            <p>Access your library account</p>
+        </div>
+
+        <div class="form-container">
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('login')">Login</div>
+                <div class="tab" onclick="switchTab('signup')">Sign Up</div>
+            </div>
+
+            <!-- Login Form -->
+            <div id="login-form" class="form active">
+                <h2>Welcome Back</h2>
+                <div class="success-message" id="login-success"></div>
+
+                <form onsubmit="handleLogin(event)">
+                    <div class="input-group">
+                        <label for="login-email">Email Address</label>
+                        <input type="email" id="login-email" placeholder="Enter your email" required>
+                        <span class="error-message" id="login-email-error"></span>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" placeholder="Enter your password" required>
+                        <span class="error-message" id="login-password-error"></span>
+                    </div>
+
+                    <div class="forgot-password">
+                        <a href="#"
+                            onclick="alert('Password reset link would be sent to your email'); return false;">Forgot
+                            Password?</a>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="remember-me">
+                        <label for="remember-me">Remember me</label>
+                    </div>
+
+                    <button type="submit">Login</button>
+                </form>
+
+                <div class="divider">
+                    <span>Or continue with</span>
+                </div>
+
+                <div class="social-login">
+                    <button class="social-btn" onclick="socialLogin('Google')">Google</button>
+                    <button class="social-btn" onclick="socialLogin('Facebook')">Facebook</button>
+                </div>
+            </div>
+
+            <!-- Sign Up Form -->
+            <div id="signup-form" class="form">
+                <h2>Create Account</h2>
+                <div class="success-message" id="signup-success"></div>
+
+                <form onsubmit="handleSignup(event)">
+                    <div class="input-group">
+                        <label for="signup-name">Full Name</label>
+                        <input type="text" id="signup-name" placeholder="Enter your full name" required>
+                        <span class="error-message" id="signup-name-error"></span>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="signup-email">Email Address</label>
+                        <input type="email" id="signup-email" placeholder="Enter your email" required>
+                        <span class="error-message" id="signup-email-error"></span>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="signup-password">Password</label>
+                        <input type="password" id="signup-password" placeholder="Create a password" required
+                            minlength="6">
+                        <span class="error-message" id="signup-password-error"></span>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="signup-confirm-password">Confirm Password</label>
+                        <input type="password" id="signup-confirm-password" placeholder="Confirm your password"
+                            required>
+                        <span class="error-message" id="signup-confirm-error"></span>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="terms" required>
+                        <label for="terms">I agree to the Terms and Conditions</label>
+                    </div>
+
+                    <button type="submit">Sign Up</button>
+                </form>
+
+                <div class="divider">
+                    <span>Or continue with</span>
+                </div>
+
+                <div class="social-login">
+                    <button class="social-btn" onclick="socialLogin('Google')">Google</button>
+                    <button class="social-btn" onclick="socialLogin('Facebook')">Facebook</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tab) {
+            // Update tab active state
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update form active state
+            const forms = document.querySelectorAll('.form');
+            forms.forEach(f => f.classList.remove('active'));
+
+            if (tab === 'login') {
+                document.getElementById('login-form').classList.add('active');
+            } else {
+                document.getElementById('signup-form').classList.add('active');
+            }
+
+            // Clear any error messages
+            clearErrors();
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            clearErrors();
+
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            // Basic validation
+            if (!validateEmail(email)) {
+                showError('login-email-error', 'Please enter a valid email address');
+                return;
+            }
+
+            if (password.length < 6) {
+                showError('login-password-error', 'Password must be at least 6 characters');
+                return;
+            }
+
+            // Simulate successful login
+            const successMsg = document.getElementById('login-success');
+            successMsg.textContent = 'Login successful! Redirecting to homepage...';
+            successMsg.style.display = 'block';
+
+            // Store login state
+            localStorage.setItem('userLoggedIn', 'true');
+            localStorage.setItem('userEmail', email);
+
+            // Redirect to homepage after 1.5 seconds
+            setTimeout(() => {
+                window.location.href = 'library-home.html';
+            }, 1500);
+        }
+
+        function handleSignup(event) {
+            event.preventDefault();
+            clearErrors();
+
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const confirmPassword = document.getElementById('signup-confirm-password').value;
+
+            // Validation
+            if (name.length < 2) {
+                showError('signup-name-error', 'Please enter a valid name');
+                return;
+            }
+
+            if (!validateEmail(email)) {
+                showError('signup-email-error', 'Please enter a valid email address');
+                return;
+            }
+
+            if (password.length < 6) {
+                showError('signup-password-error', 'Password must be at least 6 characters');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showError('signup-confirm-error', 'Passwords do not match');
+                return;
+            }
+
+            // Simulate successful signup
+            const successMsg = document.getElementById('signup-success');
+            successMsg.textContent = 'Account created successfully! Please login.';
+            successMsg.style.display = 'block';
+
+            setTimeout(() => {
+                event.target.reset();
+                successMsg.style.display = 'none';
+                switchTab('login');
+                document.querySelectorAll('.tab')[0].classList.add('active');
+                document.querySelectorAll('.tab')[1].classList.remove('active');
+            }, 2000);
+        }
+
+        function socialLogin(provider) {
+            // Simulate social login success
+            localStorage.setItem('userLoggedIn', 'true');
+            localStorage.setItem('userEmail', `user@${provider.toLowerCase()}.com`);
+
+            alert(`${provider} login successful! Redirecting to homepage...`);
+
+            setTimeout(() => {
+                window.location.href = 'library-home.html';
+            }, 1000);
+        }
+
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function showError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+
+        function clearErrors() {
+            const errorMessages = document.querySelectorAll('.error-message');
+            errorMessages.forEach(msg => {
+                msg.style.display = 'none';
+                msg.textContent = '';
+            });
+        }
+    </script>
+</body>
+
+</html>
