@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 public class LibraryApp {
 
-    // ==================== BOOK CLASS ====================
+
     static class Book {
         private String bookId;
         private String title;
@@ -77,7 +77,7 @@ public class LibraryApp {
         }
     }
 
-    // ==================== USER CLASS ====================
+    
     static class User {
         private String userId;
         private String name;
@@ -128,7 +128,7 @@ public class LibraryApp {
         }
     }
 
-    // ==================== ISSUE RECORD CLASS ====================
+   
     static class IssueRecord {
         private String issueId;
         private String bookId;
@@ -222,7 +222,7 @@ public class LibraryApp {
         }
     }
 
-    // ==================== LIBRARY MANAGEMENT SYSTEM CLASS ====================
+   
     static class LibraryManagementSystem {
         private HashMap<String, Book> books;
         private HashMap<String, User> users;
@@ -369,7 +369,7 @@ public class LibraryApp {
         }
     }
 
-    // ==================== MAIN APPLICATION ====================
+
     private static LibraryManagementSystem lms = new LibraryManagementSystem();
     private static Scanner scanner = new Scanner(System.in);
 
